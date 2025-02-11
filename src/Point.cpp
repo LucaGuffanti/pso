@@ -31,6 +31,17 @@ T& Point<dim, T>::at(std::size_t index)
 }
 
 template <std::size_t dim, typename T>
+const T Point<dim, T>::at(std::size_t index) const
+{
+    if (index >= dim)
+    {
+        throw std::out_of_range("Index out of range");
+    }
+
+    return data[index];
+}
+
+template <std::size_t dim, typename T>
 Point<dim, T> Point<dim, T>::operator+(Point<dim, T>& other) const
 {
     Point<dim, T> result;
@@ -43,12 +54,36 @@ Point<dim, T> Point<dim, T>::operator+(Point<dim, T>& other) const
 }
 
 template <std::size_t dim, typename T>
+Point<dim, T> Point<dim, T>::operator+(const T& scalar) const
+{
+    Point<dim, T> result;
+    for (std::size_t i = 0; i < dim; i++)
+    {
+        result[i] = data[i] + scalar;
+    }
+
+    return result;
+}
+
+template <std::size_t dim, typename T>
 Point<dim, T> Point<dim, T>::operator-(Point<dim, T>& other) const
 {
     Point<dim, T> result;
     for (std::size_t i = 0; i < dim; i++)
     {
         result[i] = data[i] - other[i];
+    }
+
+    return result;
+}
+
+template <std::size_t dim, typename T>
+Point<dim, T> Point<dim, T>::operator-(const T& scalar) const
+{
+    Point<dim, T> result;
+    for (std::size_t i = 0; i < dim; i++)
+    {
+        result[i] = data[i] - scalar;
     }
 
     return result;
@@ -84,6 +119,19 @@ Point<dim, T> Point<dim, T>::operator/(T& scalar) const
     return result;
 }
 
+
+template <std::size_t dim, typename T>
+T Point<dim, T>::dot(const Point<dim, T>& other) const
+{
+    T result = static_cast<T>(0);
+    for (std::size_t i = 0; i < dim; i++)
+    {
+        result += data[i] * other[i];
+    }
+
+    return result;
+}
+
 template <std::size_t dim, typename T>
 void Point<dim, T>::print() const
 {
@@ -94,6 +142,9 @@ void Point<dim, T>::print() const
     std::cout << std::endl;
 }
 
+
+
+// Explicit instantiation
 template class Point<3, double>;
 template class Point<3, float>;
 template class Point<3, int>;

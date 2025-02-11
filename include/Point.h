@@ -46,6 +46,14 @@ namespace pso
         T& operator[](std::size_t index){ return data[index];}
 
         /**
+         * @brief Accesses the element at the specified index, without control over the bounds
+         * 
+         * @param index index
+         * @return const T reference to the element
+         */
+        const T operator[](std::size_t index) const { return data[index];}
+
+        /**
          * @brief Accesses the element at the specified index, with control over the bounds.
          * 
          * @param index index
@@ -55,12 +63,30 @@ namespace pso
         T& at(std::size_t index);
 
         /**
+         * @brief Accesses the element at the specified index, with control over the bounds.
+         * 
+         * @param index index
+         * @throws std::out_of_range if index is out of range
+         * @return const T reference to the element
+         */
+        const T at(std::size_t index) const;
+    
+        /**
          * @brief Performs element-wise addition of two points.
          * 
          * @param other other point
          * @return Point a new point containing the sum
          */
         Point operator+(Point<dim, T>& other) const;
+
+
+        /**
+         * @brief Performs element-wise addition of a point and a scalar.
+         * 
+         * @param scalar scalar
+         * @return Point a new point containing the sum
+         */
+        Point operator+(const T& scalar) const;
 
         /**
          * @brief Performs element-wise subtraction of two points.
@@ -69,6 +95,14 @@ namespace pso
          * @return Point a new point containing the difference
          */
         Point operator-(Point<dim, T>& other) const;
+
+        /**
+         * @brief Performs element-wise subtraction of a point and a scalar.
+         * 
+         * @param scalar scalar
+         * @return Point a new point containing the difference
+         */
+        Point operator-(const T& scalar) const;
 
         /**
          * @brief Performs element-wise multiplication of a point by a scalar.
@@ -87,8 +121,28 @@ namespace pso
          */
         Point operator/(T& scalar) const;
 
+        /**
+         * @brief Computes the dot product of two points.
+         * 
+         * @param other other point
+         * @return T dot product
+         */
+        T dot(const Point<dim, T>& other) const;
+
+
         void print() const;
-
     };
+}
 
+using namespace pso;
+
+template<std::size_t dim, typename T>
+std::ostream& operator<<(std::ostream& os, const Point<dim, T>& point)
+{
+    for (std::size_t i = 0; i < dim; i++)
+    {
+        os << point[i] << " ";
+    }
+    os << std::endl;
+    return os;
 }
