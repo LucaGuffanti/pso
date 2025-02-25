@@ -7,6 +7,20 @@ set(LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+
+# ====== Set the build type ======
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# ====== Set the compiler flags ======
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Building in debug mode")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -g")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+endif()
+
 # ====== Find the OpenMP package ======
 find_package(OpenMP REQUIRED)
 # ====== Find the MPI package ======
