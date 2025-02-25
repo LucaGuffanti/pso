@@ -143,6 +143,22 @@ void Point<dim, T>::randomize(const T& min, const T& max)
     }
 }
 
+template <std::size_t dim, typename T>
+T Point<dim, T>::norm(const NormType type) const
+{
+    if (type == NormType::ONE_NORM)
+    {
+        return std::accumulate(data, data + dim, static_cast<T>(0), [](T acc, T x){ return acc + std::abs(x);});
+    }
+    else if (type == NormType::TWO_NORM)
+    {
+        return std::sqrt(std::inner_product(data, data + dim, data, static_cast<T>(0)));
+    }
+    else
+    {
+        return *std::max_element(data, data + dim);
+    }
+}
 
 template <std::size_t dim, typename T>
 void Point<dim, T>::print() const

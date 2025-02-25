@@ -31,5 +31,10 @@ int main()
     p3.randomize(-10, 10);
     std::cout << p3 << std::endl;
 
+    std::cout << p3.norm() << std::endl;
+    std::cout << p3.norm(NormType::ONE_NORM) << std::endl;
+    std::cout << p3.norm(NormType::INF_NORM) << std::endl;
+    
+
     return 0;
 }

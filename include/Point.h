@@ -9,6 +9,8 @@
 #include <iostream>
 #include <random>
 
+#include "constants.h"
+
 namespace pso
 {   
     /**
@@ -139,6 +141,14 @@ namespace pso
          * @param max Maximum possible value
          */
         void randomize(const T& min, const T& max);
+
+
+        /**
+         * @brief Compute norm of the point, seen as a vector
+         * 
+         */
+        T norm(const NormType type = TWO_NORM) const;
+        
 
         void print() const;
 
