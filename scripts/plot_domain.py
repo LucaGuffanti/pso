@@ -36,6 +36,7 @@ def plot_domain(data, output_dir):
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     plt.savefig(f"{output_dir}/domain.png")
+    plt.close()
 
 if __name__ == "__main__":
     data = load_domain(input_file="build/domain.txt")
