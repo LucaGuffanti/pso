@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <limits>
 #include <iostream>
-
+#include <random>
 
 namespace pso
 {   
@@ -18,13 +18,16 @@ namespace pso
      * @tparam T scalar
      */
     template <std::size_t dim, typename T>
-    requires std::is_arithmetic_v<T>
+    requires std::is_floating_point_v<T>
     class Point
     {
     private:
+        static std::random_device rd;
+        static std::mt19937 gen;
+        
         T data[dim];
-    public:
 
+    public:
         Point() { std::fill(data, data + dim, static_cast<T>(0)); };
         Point(const Point<dim, T>&) = default;
         Point(Point<dim, T>&&) = default;
@@ -129,12 +132,52 @@ namespace pso
          */
         T dot(const Point<dim, T>& other) const;
 
+        /**
+         * @brief Randomizes the coordinates of the point within the specified range.
+         * 
+         * @param min Minimum possible value
+         * @param max Maximum possible value
+         */
+        void randomize(const T& min, const T& max);
 
         void print() const;
-    };
-}
 
+        /**
+         * @brief Iterator for a Point object. Iterates on the coordinates of the point
+         * 
+         */
+        struct Iterator
+        {
+            using iterator_category = std::forward_iterator_tag;
+            using difference_type = std::ptrdiff_t;
+            using value_type = T;
+
+            T* ptr;
+
+            Iterator(T* p) : ptr(p) {}
+            T& operator*() const { return *ptr; }
+            T* operator->() { return ptr; }
+
+            Iterator& operator++() { ptr++; return *this; }
+            Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+
+            bool operator==(const Iterator& other) const { return ptr == other.ptr; }
+            bool operator!=(const Iterator& other) const { return ptr != other.ptr; }
+        };
+
+        Iterator begin() { return Iterator(data); }
+        Iterator end() { return Iterator(data + dim); }
+
+    };
+    
+}
 using namespace pso;
+
+template<std::size_t dim, typename T>
+std::random_device Point<dim, T>::rd;
+
+template<std::size_t dim, typename T>
+std::mt19937 Point<dim, T>::gen(Point<dim, T>::rd());
 
 template<std::size_t dim, typename T>
 std::ostream& operator<<(std::ostream& os, const Point<dim, T>& point)

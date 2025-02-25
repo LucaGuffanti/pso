@@ -132,6 +132,18 @@ T Point<dim, T>::dot(const Point<dim, T>& other) const
     return result;
 }
 
+
+template <std::size_t dim, typename T>
+void Point<dim, T>::randomize(const T& min, const T& max)
+{
+    std::uniform_real_distribution<T> dist(min, max);
+    for (auto& x: data)
+    {
+        x = dist(Point<dim,T>::gen);
+    }
+}
+
+
 template <std::size_t dim, typename T>
 void Point<dim, T>::print() const
 {
@@ -147,12 +159,9 @@ void Point<dim, T>::print() const
 // Explicit instantiation
 template class Point<3, double>;
 template class Point<3, float>;
-template class Point<3, int>;
 
 template class Point<2, double>;
 template class Point<2, float>;
-template class Point<2, int>;
 
 template class Point<1, double>;
 template class Point<1, float>;
-template class Point<1, int>;
