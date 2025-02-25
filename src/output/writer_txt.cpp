@@ -19,7 +19,7 @@ void WriterTXT<dim, T>::write_square_domain(const Point<dim, T>& min, const Poin
 
     Point<dim, T> current_point = min;
 
-    SquareGridIterator<dim, 0, T>::iterate(func, current_point, min, max, 0.01, image);
+    SquareGridIterator<dim, 0, T>::iterate(func, current_point, min, max, 0.1, image);
     for (auto& p : image)
     {
         file << p;

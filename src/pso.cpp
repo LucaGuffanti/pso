@@ -34,14 +34,21 @@ void Pso<dim, T>::create_random_vector(size_t length){
 }
 
 template<std::size_t dim, typename T>
+void Pso<dim,T>::use_writer(std::unique_ptr<WriterBase<dim, T>> ptr){
+    m_ptr = std::move(ptr);
+}
+
+template<std::size_t dim, typename T>
 void Pso<dim, T>::run_algorithm(std::function<T(Point<dim, T>&)> functional){
-    m_functional = functional;
     initialize_random_pos();
     std::cout << "Cacca" << std::endl;
     initialize_random_vel();
     create_random_vector(m_point_number);
-
-
+    m_functional = functional;
+    
+    if(m_ptr != nullptr){
+        m_ptr->write_square_domain(m_domain_min, m_domain_max, m_functional);
+    }
     m_personal_best = m_pos;
     m_global_best = m_personal_best[0];
 
@@ -75,6 +82,9 @@ void Pso<dim, T>::run_algorithm(std::function<T(Point<dim, T>&)> functional){
         }
         tolerance = std::abs(m_global_best.norm() - last_global_best.norm());
         iter ++;
+        if(m_ptr != nullptr){
+            m_ptr->write_particle_position(m_pos, m_functional);
+        }
     }
 }
 
@@ -85,3 +95,10 @@ void Pso<dim, T>::print_global_best(){
 }
 
 template class Pso<3, double>;
+template class Pso<3, float>;
+
+template class Pso<2, double>;
+template class Pso<2, float>;
+
+template class Pso<1, double>;
+template class Pso<1, float>;

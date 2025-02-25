@@ -4,7 +4,9 @@
 #include <vector>
 #include <functional>
 #include <random>
+#include <memory>
 #include "point.h"
+#include "writer_base.h"
 
 namespace pso{
     /**
@@ -24,6 +26,7 @@ namespace pso{
         public:
             void run_algorithm(std::function<T(Point<dim, T>&)> functional);
             void print_global_best();
+            void use_writer(std::unique_ptr<WriterBase<dim, T>> ptr);
 
         private: // methods
             void initialize_random_pos();
@@ -41,12 +44,12 @@ namespace pso{
             double m_tol_min;
             size_t m_max_iter;
             size_t m_point_number;
-
             std::vector<T> m_r_personal;
             std::vector<T> m_r_global;
             double m_old_vel_weight = 0.5;
             double m_local_tendency = 0.4;
             double m_global_tendency = 0.6; // NB: Check if they need to sum to one
             std::mt19937 gen;
+            std::unique_ptr<WriterBase<dim, T>> m_ptr;
     };
 }
