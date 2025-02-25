@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "Pso.h"
 #include <iostream>
 
 using namespace pso;
