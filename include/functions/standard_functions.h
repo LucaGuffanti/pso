@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <numeric>
 
-#include "Point.h"
+#include "point.h"
 
 namespace pso
 {
@@ -25,6 +25,5 @@ namespace pso
         return std::accumulate(point.begin(), point.end(), static_cast<T>(0), [](T acc, T x){ return acc + x * x; });
     }
 
-    
 
 }
