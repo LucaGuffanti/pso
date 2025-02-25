@@ -19,7 +19,7 @@ void WriterTXT<dim, T>::write_square_domain(const Point<dim, T>& min, const Poin
 
     Point<dim, T> current_point = min;
 
-    SquareGridIterator<dim, 0, T>::iterate(func, current_point, min, max, 0.1, image);
+    SquareGridIterator<dim, 0, T>::iterate(func, current_point, min, max, 0.01, image);
     for (auto& p : image)
     {
         file << p;
@@ -31,14 +31,25 @@ void WriterTXT<dim, T>::write_square_domain(const Point<dim, T>& min, const Poin
 }
 
 template <std::size_t dim, typename T>
-void WriterTXT<dim, T>::write_particle_position(const std::vector<Point<dim, T>>& particles) const
+void WriterTXT<dim, T>::write_particle_position(const std::vector<Point<dim, T>>& particles, std::function<T(Point<dim, T>&)>& func)
 {
     std::ofstream file;
-    file.open("particles.txt");
+    file.open("particles"+std::to_string(this->counter)+".txt");
+    (this->counter)++;
 
-    for (const Point<dim, T>& p : particles)
+
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open file particles.txt");
+    }
+
+    for (Point<dim, T> p : particles)
     {
-        file << p;
+        for (std::size_t i = 0; i < dim; i++)
+        {
+            file << p[i] << " ";
+        }
+        file << func(p) << std::endl;
+
     }
 
     file.close();

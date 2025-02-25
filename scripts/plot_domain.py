@@ -3,10 +3,7 @@ import os
 from scipy.interpolate import griddata
 import numpy as np
 
-def plot_domain(input_file, output_dir):
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    
+def load_domain(input_file):
     if not os.path.exists(input_file):
         raise FileNotFoundError(f"File {input_file} not found")
     
@@ -21,7 +18,11 @@ def plot_domain(input_file, output_dir):
             for i, value in enumerate(point_coord):
                 data[i].append(float(value))
         
-        print(data)
+    return data
+
+def plot_domain(data, output_dir):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
                 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -37,4 +38,5 @@ def plot_domain(input_file, output_dir):
     plt.savefig(f"{output_dir}/domain.png")
 
 if __name__ == "__main__":
-    plot_domain(input_file="build/domain.txt", output_dir="build")
+    data = load_domain(input_file="build/domain.txt")
+    plot_domain(data, output_dir="build")
