@@ -12,3 +12,4 @@ endmacro()
 
 # Test executables
 add_test_executable(point_test)
+add_test_executable(function_test)

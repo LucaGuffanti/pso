@@ -155,9 +155,9 @@ namespace pso
             T* ptr;
 
             Iterator(T* p) : ptr(p) {}
-            T& operator*() const { return *ptr; }
+            T& operator*() { return *ptr; }
             T* operator->() { return ptr; }
-
+            
             Iterator& operator++() { ptr++; return *this; }
             Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
 
@@ -167,6 +167,8 @@ namespace pso
 
         Iterator begin() { return Iterator(data); }
         Iterator end() { return Iterator(data + dim); }
+
+        
 
     };
     
