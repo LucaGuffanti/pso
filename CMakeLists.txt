@@ -32,6 +32,10 @@ file(GLOB_RECURSE PSO_SOURCES src/*.cpp)
 add_library(PSO ${PSO_SOURCES})
 target_include_directories(PSO PUBLIC 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/output
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/functions
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/util
+    # Add more subdirectories as needed
 )
 
 add_subdirectory(test)
