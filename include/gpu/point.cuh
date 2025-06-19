@@ -2,12 +2,13 @@
 
 #include <cstddef>
 #include <stdexcept>
-#include <concepts>
 #include <functional>
 #include <type_traits>
 #include <limits>
 #include <iostream>
 #include <random>
+#include <cuda_runtime.h>
+#include <cuda.h>
 
 #include "constants.h"
 
@@ -20,7 +21,6 @@ namespace pso
      * @tparam T scalar
      */
     template <std::size_t dim, typename T>
-    requires std::is_floating_point_v<T>
     class Point
     {
     private:
@@ -30,15 +30,22 @@ namespace pso
         T data[dim];
 
     public:
+        __host__ __device__
         Point() { std::fill(data, data + dim, static_cast<T>(0)); };
+        __host__ __device__
         Point(const Point<dim, T>&) = default;
+        __host__ __device__
         Point(Point<dim, T>&&) = default;
+        __host__ __device__
         Point(const T& scalar);
         Point(const std::initializer_list<T>& list);
 
+        __host__ __device__
         Point<dim, T>& operator=(const Point<dim, T>&) = default;
+        __host__ __device__
         Point<dim, T>& operator=(Point<dim, T>&&) = default;
 
+        __host__ __device__
         ~Point() = default;
 
 
@@ -48,6 +55,7 @@ namespace pso
          * @param index index
          * @return T& reference to the element
          */
+        __host__ __device__
         T& operator[](std::size_t index){ return data[index];}
 
         /**
@@ -56,6 +64,7 @@ namespace pso
          * @param index index
          * @return const T reference to the element
          */
+        __host__ __device__
         const T operator[](std::size_t index) const { return data[index];}
 
         /**

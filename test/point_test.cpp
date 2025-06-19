@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <iostream>
-#include "point.h"
+#include "point.cuh"
 #include "pso.h"
 
 using namespace pso;
@@ -49,7 +49,8 @@ int main()
     std::function<double(Point<dim, double>)> functional = f;
 
     
-    Pso<dim, double> pso_test(dim*10, tol, 1000, max, min);
+    Pso<dim, double, Modality::CPU> pso_test(dim*10, tol, 1000, max, min);
+    std::cout << "HERE" << std::endl;
     pso_test.run_algorithm(functional);
     pso_test.print_global_best();
     return 0;

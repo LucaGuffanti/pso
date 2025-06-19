@@ -5,8 +5,9 @@
 #include <functional>
 #include <random>
 #include <memory>
-#include "point.h"
+#include "point.cuh"
 #include "writer_base.h"
+#include <modality.h>
 
 namespace pso{
     /**
@@ -15,20 +16,31 @@ namespace pso{
      * @tparam dim-dimentions for every point
      * @tparam T type for every point coordinate
      */
-    template <std::size_t dim, typename T>
-    class Pso{
+    template <std::size_t dim, typename T, Modality mod>
+    class PsoBase{
 
         public:
-        Pso(size_t point_number, double tolerance, size_t max_iter, T domain_max, T domain_min) : m_point_number(point_number), m_tol_min(tolerance),
+        PsoBase(size_t point_number, double tolerance, size_t max_iter, T domain_max, T domain_min) : m_point_number(point_number), m_tol_min(tolerance),
         m_max_iter(max_iter), m_domain_max(domain_max), m_domain_min(domain_min){}
-        ~Pso() = default;
+        ~PsoBase() = default;
 
         public:
             void run_algorithm(std::function<T(Point<dim, T>&)> functional);
             void print_global_best();
             void use_writer(std::unique_ptr<WriterBase<dim, T>> ptr);
 
-        private: // methods
+        public: // getter and setter
+            size_t get_point_number() {return m_point_number;};
+            T get_domain_max() {return m_domain_max;};
+            T get_domain_min() {return m_domain_min;};
+            const std::vector<Point<dim, T>>& get_pos() const { return m_pos; }
+
+
+            void set_m_pos_from_d_pos(Point<dim, T> *h_pos) {
+                m_pos.assign(h_pos, h_pos + m_point_number);
+            };
+            
+        protected: // methods
             void initialize_random_pos();
             void initialize_random_vel();
             void create_random_vector(size_t length);
@@ -51,5 +63,18 @@ namespace pso{
             double m_global_tendency = 0.6; // NB: Check if they need to sum to one
             std::mt19937 gen;
             std::unique_ptr<WriterBase<dim, T>> m_ptr;
+    };
+
+    template <std::size_t dim, typename T, Modality mod>
+    class Pso : public PsoBase<dim, T, mod>{};
+
+    template <std::size_t dim, typename T>
+    class Pso<dim, T, Modality::CPU> : public PsoBase<dim, T, Modality::CPU>{
+        public:
+            Pso(size_t point_number, double tolerance, size_t max_iter, T domain_max, T domain_min)
+                : PsoBase<dim, T, Modality::CPU>(point_number, tolerance, max_iter, domain_max, domain_min) {}
+        
+        public:
+            void initialize_random_pos();
     };
 }

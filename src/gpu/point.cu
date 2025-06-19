@@ -1,4 +1,4 @@
-#include <point.h>
+#include <point.cuh>
 
 using namespace pso;
 
@@ -169,8 +169,6 @@ void Point<dim, T>::print() const
     }
     std::cout << std::endl;
 }
-
-
 
 // Explicit instantiation
 template class Point<3, double>;

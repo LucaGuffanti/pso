@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <numeric>
 
-#include "point.h"
+#include "point.cuh"
 
 namespace pso
 {

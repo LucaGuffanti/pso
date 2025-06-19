@@ -1,5 +1,6 @@
 #include "functions/standard_functions.h"
 #include "pso.h"
+#include "pso_gpu.cuh"
 #include "writer_txt.h"
 #include <functional>
 #include <cassert>
@@ -21,7 +22,10 @@ int main()
     // Real PSO example\
     std::cout << sphere(p1) << std::endl;
     std::function<double(Point<dim, double>&)> functional = sphere<dim, double>;
-    Pso<dim, double, Modality::CPU> pso_test(dim*10, tol, 1000, max, min);
+    Pso<dim, double, Modality::GPU> pso_test(dim*10, tol, 1000, max, min);
+    // Print the static type of Pso
+    std::cout << "Type of pso_test: " << typeid(pso_test).name() << std::endl;
+    
     std::unique_ptr<WriterBase<dim, double>> p = std::make_unique<WriterTXT<dim, double>>();
     pso_test.use_writer(std::move(p));
     pso_test.run_algorithm(functional);
