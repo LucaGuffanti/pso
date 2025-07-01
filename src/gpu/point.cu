@@ -42,7 +42,7 @@ const T Point<dim, T>::at(std::size_t index) const
 }
 
 template <std::size_t dim, typename T>
-Point<dim, T> Point<dim, T>::operator+(Point<dim, T>& other) const
+Point<dim, T> Point<dim, T>::operator+(const Point<dim, T>& other) const
 {
     Point<dim, T> result;
     for (std::size_t i = 0; i < dim; i++)
@@ -66,7 +66,7 @@ Point<dim, T> Point<dim, T>::operator+(const T& scalar) const
 }
 
 template <std::size_t dim, typename T>
-Point<dim, T> Point<dim, T>::operator-(Point<dim, T>& other) const
+Point<dim, T> Point<dim, T>::operator-(const Point<dim, T>& other) const
 {
     Point<dim, T> result;
     for (std::size_t i = 0; i < dim; i++)
@@ -90,7 +90,7 @@ Point<dim, T> Point<dim, T>::operator-(const T& scalar) const
 }
 
 template <std::size_t dim, typename T>
-Point<dim, T> Point<dim, T>::operator*(T& scalar) const
+Point<dim, T> Point<dim, T>::operator*(const T& scalar) const
 {
     Point<dim, T> result;
     for (std::size_t i = 0; i < dim; i++)
@@ -148,15 +148,32 @@ T Point<dim, T>::norm(const NormType type) const
 {
     if (type == NormType::ONE_NORM)
     {
-        return std::accumulate(data, data + dim, static_cast<T>(0), [](T acc, T x){ return acc + std::abs(x);});
+        T sum = static_cast<T>(0);
+        for (std::size_t i = 0; i < dim; ++i) {
+            sum += data[i] < static_cast<T>(0) ? -data[i] : data[i];
+        }
+        return sum;
     }
     else if (type == NormType::TWO_NORM)
     {
-        return std::sqrt(std::inner_product(data, data + dim, data, static_cast<T>(0)));
+        T sum = static_cast<T>(0);
+        for (std::size_t i = 0; i < dim; ++i) {
+            sum += data[i] * data[i];
+        }
+        return (T)sqrt(sum);
     }
     else
     {
-        return *std::max_element(data, data + dim);
+        #ifndef __CUDA_ARCH__
+            return *std::max_element(data, data + dim);
+        #else
+            // GPU-friendly max element (manual loop, no exceptions)
+            T max_val = data[0];
+            for (std::size_t i = 1; i < dim; ++i) {
+                if (data[i] > max_val) max_val = data[i];
+            }
+            return max_val;
+        #endif
     }
 }
 

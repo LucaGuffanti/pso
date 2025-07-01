@@ -31,13 +31,19 @@ namespace pso
 
     public:
         __host__ __device__
-        Point() { std::fill(data, data + dim, static_cast<T>(0)); };
+        Point() { 
+            for(int d=0; d<dim; d++){
+                data[d] = static_cast<T>(0);
+            }
+        };
         __host__ __device__
         Point(const Point<dim, T>&) = default;
         __host__ __device__
         Point(Point<dim, T>&&) = default;
-        __host__ __device__
+
+        __host__
         Point(const T& scalar);
+        
         Point(const std::initializer_list<T>& list);
 
         __host__ __device__
@@ -91,7 +97,8 @@ namespace pso
          * @param other other point
          * @return Point a new point containing the sum
          */
-        Point operator+(Point<dim, T>& other) const;
+        __host__ __device__
+        Point operator+(const Point<dim, T>& other) const;
 
 
         /**
@@ -108,7 +115,8 @@ namespace pso
          * @param other other point
          * @return Point a new point containing the difference
          */
-        Point operator-(Point<dim, T>& other) const;
+        __host__ __device__
+        Point operator-(const Point<dim, T>& other) const;
 
         /**
          * @brief Performs element-wise subtraction of a point and a scalar.
@@ -124,7 +132,8 @@ namespace pso
          * @param scalar scalar
          * @return Point a new point containing the product
          */
-        Point operator*(T& scalar) const;
+        __host__ __device__
+        Point operator*(const T& scalar) const;
 
         /**
          * @brief Performs element-wise division of a point by a scalar.
@@ -156,6 +165,7 @@ namespace pso
          * @brief Compute norm of the point, seen as a vector
          * 
          */
+        __host__ __device__
         T norm(const NormType type = TWO_NORM) const;
         
 

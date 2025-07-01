@@ -7,6 +7,10 @@
 #include "modality.h"
 #include "point.cuh"
 #include "pso.h"
+#include <thrust/device_ptr.h>
+#include <thrust/sort.h>
+#include <thrust/extrema.h>
+#include <thrust/functional.h>
 
 namespace pso {
     template <std::size_t dim, typename T>
@@ -19,8 +23,8 @@ namespace pso {
                 }
         
         public:
-            void initialize_random_pos();
-            void initialize_random_vel();
+            void initialize_random_vec(Point<dim, T> **d_vec);
+            void initialize_random_vec(T **d_vec);
             void run_algorithm(std::function<T(Point<dim, T>&)> functional);
             void cpy_vec_to_host(Point<dim, T> *d_pos);
 
@@ -31,5 +35,17 @@ namespace pso {
         private:    // vars
             Point<dim, T> *d_pos;
             Point<dim, T> *d_vel;
+
+            Point<dim, T> *d_personal_best;
+            Point<dim, T> h_global_best;
+
+            T *d_r_personal;
+            T *d_r_global;
+            
+            T *d_eval_function;
+
+            T m_old_vel_weight = 0.5;
+            T m_local_tendency = 0.4;
+            T m_global_tendency = 0.6;
     };
 }

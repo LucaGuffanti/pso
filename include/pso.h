@@ -33,8 +33,9 @@ namespace pso{
             size_t get_point_number() {return m_point_number;};
             T get_domain_max() {return m_domain_max;};
             T get_domain_min() {return m_domain_min;};
-            const std::vector<Point<dim, T>>& get_pos() const { return m_pos; }
-
+            const std::vector<Point<dim, T>>& get_pos() const { return m_pos;};
+            double get_tol_min(){return m_tol_min;};
+            size_t get_max_iter() {return m_max_iter;};
 
             void set_m_pos_from_d_pos(Point<dim, T> *h_pos) {
                 m_pos.assign(h_pos, h_pos + m_point_number);
