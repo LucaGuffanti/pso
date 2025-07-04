@@ -9,7 +9,7 @@
 #include <array>
 #include <vector>
 
-#include "point.h"
+#include "point.cuh"
 
 namespace pso
 {

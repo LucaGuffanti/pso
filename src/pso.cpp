@@ -2,8 +2,8 @@
 
 using namespace pso;
 
-template<std::size_t dim, typename T>
-void Pso<dim, T>::initialize_random_pos(){
+template<std::size_t dim, typename T, Modality mod>
+void PsoBase<dim, T, mod>::initialize_random_pos(){
     for(size_t i=0; i<m_point_number; i++){
         Point<dim, T> point;
         point.randomize(m_domain_min, m_domain_max);
@@ -11,8 +11,8 @@ void Pso<dim, T>::initialize_random_pos(){
     }
 }
 
-template<std::size_t dim, typename T>
-void Pso<dim, T>::initialize_random_vel(){
+template<std::size_t dim, typename T, Modality mod>
+void PsoBase<dim, T, mod>::initialize_random_vel(){
     for(size_t i=0; i<m_point_number; i++){
         Point<dim, T> point;
         point.randomize(m_domain_min, m_domain_max);
@@ -20,8 +20,8 @@ void Pso<dim, T>::initialize_random_vel(){
     }
 }
 
-template<std::size_t dim, typename T>
-void Pso<dim, T>::create_random_vector(size_t length){
+template<std::size_t dim, typename T, Modality mod>
+void PsoBase<dim, T, mod>::create_random_vector(size_t length){
     std::uniform_real_distribution<T> dist(0.0, 1.0);
     std::vector<T> rand;
     for(size_t i=0; i<length; i++){
@@ -33,15 +33,14 @@ void Pso<dim, T>::create_random_vector(size_t length){
     }
 }
 
-template<std::size_t dim, typename T>
-void Pso<dim,T>::use_writer(std::unique_ptr<WriterBase<dim, T>> ptr){
+template<std::size_t dim, typename T, Modality mod>
+void PsoBase<dim,T, mod>::use_writer(std::unique_ptr<WriterBase<dim, T>> ptr){
     m_ptr = std::move(ptr);
 }
 
-template<std::size_t dim, typename T>
-void Pso<dim, T>::run_algorithm(std::function<T(Point<dim, T>&)> functional){
+template<std::size_t dim, typename T, Modality mod>
+void PsoBase<dim, T, mod>::run_algorithm(std::function<T(Point<dim, T>&)> functional){
     initialize_random_pos();
-    std::cout << "Cacca" << std::endl;
     initialize_random_vel();
     create_random_vector(m_point_number);
     m_functional = functional;
@@ -88,17 +87,36 @@ void Pso<dim, T>::run_algorithm(std::function<T(Point<dim, T>&)> functional){
     }
 }
 
-template<std::size_t dim, typename T>
-void Pso<dim, T>::print_global_best(){
+
+template<std::size_t dim, typename T, Modality mod>
+void PsoBase<dim, T, mod>::print_global_best(){
     std::cout << "Printing best pos: " << std::endl;
     m_global_best.print();
 }
 
-template class Pso<3, double>;
-template class Pso<3, float>;
+template class PsoBase<3, double, Modality::CPU>;
+template class PsoBase<3, float, Modality::CPU>;
 
-template class Pso<2, double>;
-template class Pso<2, float>;
+template class PsoBase<2, double, Modality::CPU>;
+template class PsoBase<2, float, Modality::CPU>;
 
-template class Pso<1, double>;
-template class Pso<1, float>;
+template class PsoBase<1, double, Modality::CPU>;
+template class PsoBase<1, float, Modality::CPU>;
+
+template class PsoBase<3, double, Modality::GPU>;
+template class PsoBase<3, float, Modality::GPU>;
+
+template class PsoBase<2, double, Modality::GPU>;
+template class PsoBase<2, float, Modality::GPU>;
+
+template class PsoBase<1, double, Modality::GPU>;
+template class PsoBase<1, float, Modality::GPU>;
+
+template class Pso<3, double, Modality::CPU>;
+template class Pso<3, float, Modality::CPU>;
+
+template class Pso<2, double, Modality::CPU>;
+template class Pso<2, float, Modality::CPU>;
+
+template class Pso<1, double, Modality::CPU>;
+template class Pso<1, float, Modality::CPU>;

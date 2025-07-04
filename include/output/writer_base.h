@@ -4,7 +4,7 @@
 #include <vector>
 #include <functional>
 
-#include "point.h"
+#include "point.cuh"
 
 namespace pso
 {

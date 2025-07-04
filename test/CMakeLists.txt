@@ -13,6 +13,11 @@ add_test_executable(point_test)
 add_test_executable(function_test)
 add_test_executable(txt_writer_test)
 
+
+
+
 if (${PSO_CUDA_PRESENT})
     add_test_executable(test_gpu)
+    # add_test_executable(culo)
+
 endif()
