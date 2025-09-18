@@ -116,11 +116,13 @@ __global__ void update_personal_best(
 }
 
 template<std::size_t dim, typename T>
-void Pso<dim, T, Modality::GPU>::run_algorithm(std::function<T(Point<dim, T>&)> functional){
+void Pso<dim, T, Modality::GPU>::run_algorithm(){
     std::cout << "RUN ALGORITHM ON GPU" << std::endl;
 
-    initialize_random_vec(&d_pos);
-    initialize_random_vec(&d_vel);
+    if(d_pos == nullptr){
+        initialize_random_vec(&d_pos);
+        initialize_random_vec(&d_vel);
+    }
 
     initialize_random_vec(&d_r_personal);
     initialize_random_vec(&d_r_global);
@@ -172,8 +174,8 @@ void Pso<dim, T, Modality::GPU>::run_algorithm(std::function<T(Point<dim, T>&)> 
 
 
     while(tolerance > tol_min && iter < max_iter){
-        std::cout << "Iter: " << iter << std::endl;
-        std::cout << "Tolerance norm: " << tolerance << std::endl;
+        // std::cout << "Iter: " << iter << std::endl;
+        // std::cout << "Tolerance norm: " << tolerance << std::endl;
 
 //      m_vel[p][d] =   m_old_vel_weight*m_vel[p][d] + 
 //                      m_r_personal[p]*m_local_tendency*(m_personal_best[p][d]-m_pos[p][d]) + 
@@ -233,16 +235,16 @@ void Pso<dim, T, Modality::GPU>::run_algorithm(std::function<T(Point<dim, T>&)> 
 
         tolerance = std::abs(h_global_best.norm() - last_global_best.norm());
 
-        std::cout << "Last global best: ";
-        for (size_t d = 0; d < dim; ++d) {
-            std::cout << last_global_best[d] << " ";
-        }
-        std::cout << std::endl;
-        std::cout << "Current global best: ";
-        for (size_t d = 0; d < dim; ++d) {
-            std::cout << h_global_best[d] << " ";
-        }
-        std::cout << std::endl;
+        // std::cout << "Last global best: ";
+        // for (size_t d = 0; d < dim; ++d) {
+        //     std::cout << last_global_best[d] << " ";
+        // }
+        // std::cout << std::endl;
+        // std::cout << "Current global best: ";
+        // for (size_t d = 0; d < dim; ++d) {
+        //     std::cout << h_global_best[d] << " ";
+        // }
+        // std::cout << std::endl;
 
         iter ++;
         d_pos = d_pos_new;
@@ -332,6 +334,19 @@ void Pso<dim, T, Modality::GPU>::cpy_vec_to_host(Point<dim, T> *d_pos){
     
     this->set_m_pos_from_d_pos(h_pos);
     delete[] h_pos;
+}
+
+template<std::size_t dim, typename T>
+void Pso<dim, T, Modality::GPU>::set_d_vec(Point<dim, T> *vec, bool pos){
+    std::cout << "Setting device vector (" << (pos ? "position" : "velocity") << ") on GPU" << std::endl;
+    int n_elements = this->get_point_number();
+    if (pos) {
+        check_cuda_error(cudaMalloc(&d_pos, sizeof(Point<dim, T>) * n_elements), "error in malloc d_pos in set_d_vec");
+        check_cuda_error(cudaMemcpy(d_pos, vec, sizeof(Point<dim, T>) * n_elements, cudaMemcpyHostToDevice), "error copying vec to d_pos in set_d_vec");
+    } else {
+        check_cuda_error(cudaMalloc(&d_vel, sizeof(Point<dim, T>) * n_elements), "error in malloc d_vel in set_d_vec");
+        check_cuda_error(cudaMemcpy(d_vel, vec, sizeof(Point<dim, T>) * n_elements, cudaMemcpyHostToDevice), "error copying vec to d_vel in set_d_vec");
+    }
 }
 
 

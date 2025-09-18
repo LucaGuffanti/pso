@@ -40,8 +40,11 @@ void PsoBase<dim,T, mod>::use_writer(std::unique_ptr<WriterBase<dim, T>> ptr){
 
 template<std::size_t dim, typename T, Modality mod>
 void PsoBase<dim, T, mod>::run_algorithm(std::function<T(Point<dim, T>&)> functional){
-    initialize_random_pos();
-    initialize_random_vel();
+
+    if(m_pos.empty()){
+        initialize_random_pos();
+        initialize_random_vel();
+    }
     create_random_vector(m_point_number);
     m_functional = functional;
     
@@ -61,8 +64,8 @@ void PsoBase<dim, T, mod>::run_algorithm(std::function<T(Point<dim, T>&)> functi
     Point<dim, T> last_global_best; 
     size_t iter = 0;
     while(tolerance > m_tol_min && iter < m_max_iter){
-        std::cout << "Iter: " << iter << std::endl;
-        std::cout << "Tolerance norm: " << tolerance << std::endl;
+        // std::cout << "Iter: " << iter << std::endl;
+        // std::cout << "Tolerance norm: " << tolerance << std::endl;
         for(size_t p = 0; p<m_pos.size(); p++){
             for(size_t d = 0; d<dim; d++){
                 // random r_personal, r_global

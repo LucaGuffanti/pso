@@ -25,9 +25,9 @@ namespace pso {
         public:
             void initialize_random_vec(Point<dim, T> **d_vec);
             void initialize_random_vec(T **d_vec);
-            void run_algorithm(std::function<T(Point<dim, T>&)> functional);
+            void run_algorithm();
             void cpy_vec_to_host(Point<dim, T> *d_pos);
-
+            void set_d_vec(Point<dim, T> *vec, bool pos);
         private:    // methods
             void check_cuda_error(cudaError_t err, const char *msg);
 
