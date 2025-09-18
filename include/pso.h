@@ -40,6 +40,14 @@ namespace pso{
             void set_m_pos_from_d_pos(Point<dim, T> *h_pos) {
                 m_pos.assign(h_pos, h_pos + m_point_number);
             };
+
+            void set_m_vec(std::vector<Point<dim, T>> *vec, bool pos){
+                if(pos){
+                    m_pos = *vec;
+                } else {
+                    m_vel = *vec;
+                }
+            }
             
         protected: // methods
             void initialize_random_pos();
